@@ -18,17 +18,24 @@ app.all('*', function (req, res, next) {
   }
 })
 
-const targetUrl = 'http://localhost:8080'
+// const targetUrl = 'http://localhost:3000'
 
-// 设置拦截规则
-app.use('/adming/*', createProxyMiddleware({ target: targetUrl, changeOrigin: true }))
+// // 设置拦截规则
+// app.use('/*', createProxyMiddleware({ target: targetUrl, changeOrigin: true }))
 
-app.use('/login', createProxyMiddleware({ target: targetUrl, changeOrigin: true }))
+const proxyTable = {
+  '/login': 'http://localhost:3000',
+  '/user': 'http://172.16.210.29:8081'
+}
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'))
-})
+for (let key in proxy) {
+  app.use(key, createProxyMiddleware({ target: proxyTable[key], changeOrigin: true }))
+}
 
-app.listen(3000, () => {
-  console.log('localhost:3000')
+// app.get('/', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'index.html'))
+// })
+
+app.listen(3001, () => {
+  console.log('localhost:3001')
 })
